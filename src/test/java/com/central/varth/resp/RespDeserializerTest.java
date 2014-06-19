@@ -175,5 +175,25 @@ public class RespDeserializerTest {
 			RespType t = type.getElement().get(i);
 			System.err.println(t.toString());
 		}		
-	}				
+	}			
+	
+	@Test(expected=MovedException.class)
+	public void movedExceptionTest() throws IOException, RespException
+	{
+		String str = "-MOVED 3999 127.0.0.1:6381";
+		InputStream is = new ByteArrayInputStream(str.getBytes());
+		RespDeserializer deserializer = new RespDeserializer(is);
+		SimpleString type = deserializer.deserialize(SimpleString.class);
+		Assert.assertNull(type);
+	}	
+	
+	@Test(expected=AskException.class)
+	public void askExceptionTest() throws IOException, RespException
+	{
+		String str = "-ASK 3999 127.0.0.1:6381";
+		InputStream is = new ByteArrayInputStream(str.getBytes());
+		RespDeserializer deserializer = new RespDeserializer(is);
+		SimpleString type = deserializer.deserialize(SimpleString.class);
+		Assert.assertNull(type);
+	}		
 }

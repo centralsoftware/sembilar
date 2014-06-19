@@ -59,9 +59,23 @@ public class RespDeserializer {
 			case TypeConstant.ARRAY_TYPE:
 				return type.cast(parseResponseToRespArray(line, reader));
 			default:
-				throw new RespException(line);
+				throw processException(line);
 		}
 	}	
+	
+	private RespException processException(String line)
+	{
+		if (line.startsWith(TypeConstant.ERROR_TYPE + ProtocolConstant.RESPONSE_MOVED))
+		{
+			return new MovedException(line);
+		} else if (line.startsWith(TypeConstant.ERROR_TYPE + ProtocolConstant.RESPONSE_ASK))
+		{
+			return new AskException(line);
+		} else
+		{
+			return new RespException(line);
+		}
+	}
 	
 	protected BulkString parseResponseToBulkString(String line, BufferedReader reader) throws IOException
 	{

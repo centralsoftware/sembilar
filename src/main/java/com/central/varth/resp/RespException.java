@@ -21,7 +21,8 @@ import com.central.varth.resp.type.RespError;
 
 public class RespException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4044346985743900590L;
+
 	private RespError error;
 	
 	public RespException()

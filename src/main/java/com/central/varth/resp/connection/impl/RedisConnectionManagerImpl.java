@@ -19,6 +19,7 @@
 package com.central.varth.resp.connection.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +27,12 @@ import java.util.List;
 import com.central.varth.resp.ProtocolConstant;
 import com.central.varth.resp.RespException;
 import com.central.varth.resp.cluster.ClusterNode;
-import com.central.varth.resp.cluster.ClusterNodeParser;
-import com.central.varth.resp.cluster.RedisClusterNodeParser;
 import com.central.varth.resp.command.ClusterService;
 import com.central.varth.resp.command.impl.RedisClusterServiceImpl;
 import com.central.varth.resp.connection.ConnectionManager;
 import com.central.varth.resp.connection.RespClient;
 import com.central.varth.resp.connection.RespClientFactory;
 import com.central.varth.resp.crc.CRC16;
-import com.central.varth.resp.type.BulkString;
 import com.central.varth.resp.type.RespType;
 
 public class RedisConnectionManagerImpl implements ConnectionManager 
@@ -153,8 +151,18 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 
 	@Override
 	public RespClient getClientFromPool() {
-		RespClient client = nodeClients.get(0);
+		int index = getClientIndex();
+		RespClient client = nodeClients.get(index);
 		return client;
+	}
+	
+	private int getClientIndex()
+	{
+		int max = nodeClients.size();
+		double rand = max*Math.random();
+		BigDecimal index = new BigDecimal(String.valueOf(rand));
+		index = index.setScale(0, BigDecimal.ROUND_HALF_UP);
+		return index.intValue();
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/centralsoftware/sembilar.svg?branch=master)](https://travis-ci.org/centralsoftware/sembilar.svg?branch=master)
 
-# Bastila
-Bastila is library for RESP (Redis Serialization Protocol) client. 
-Bastila is used with RESP server that supports clustering.
+# Sembilar
+Sembilar is library for RESP (Redis Serialization Protocol) client. 
+Sembilar is used with RESP server that supports clustering, e.g: Redis
 
 ## Features
 tbd

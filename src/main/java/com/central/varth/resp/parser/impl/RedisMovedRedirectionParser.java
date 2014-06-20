@@ -1,6 +1,10 @@
-package com.central.varth.resp;
+package com.central.varth.resp.parser.impl;
 
 import java.net.InetSocketAddress;
+
+import com.central.varth.resp.MovedInfo;
+import com.central.varth.resp.ProtocolConstant;
+import com.central.varth.resp.parser.MovedRedirectionParser;
 
 public class RedisMovedRedirectionParser implements MovedRedirectionParser {
 

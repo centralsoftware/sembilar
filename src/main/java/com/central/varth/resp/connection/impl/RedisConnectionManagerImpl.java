@@ -24,6 +24,10 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.central.varth.resp.AskException;
+import com.central.varth.resp.AskInfo;
+import com.central.varth.resp.MovedException;
+import com.central.varth.resp.MovedInfo;
 import com.central.varth.resp.ProtocolConstant;
 import com.central.varth.resp.RespException;
 import com.central.varth.resp.cluster.ClusterNode;
@@ -33,6 +37,9 @@ import com.central.varth.resp.connection.ConnectionManager;
 import com.central.varth.resp.connection.RespClient;
 import com.central.varth.resp.connection.RespClientFactory;
 import com.central.varth.resp.crc.CRC16;
+import com.central.varth.resp.parser.RedirectionParser;
+import com.central.varth.resp.parser.impl.RedisAskRedirectionParser;
+import com.central.varth.resp.parser.impl.RedisMovedRedirectionParser;
 import com.central.varth.resp.type.RespType;
 
 public class RedisConnectionManagerImpl implements ConnectionManager 
@@ -129,22 +136,79 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 	}
 
 	@Override
-	public <E extends RespType> E send(String command, Class<E> responseClass)
-			throws IOException, RespException {
+	public <E extends RespType> E send(String command, Class<E> responseClass) throws IOException, RespException {
 		RespClient client = getClientFromPool();
-		E response = client.send(command, responseClass);
+		E response = null;
+		try {
+			response = client.send(command, responseClass);
+		} catch (RespException e) {
+			handleRedirectException(e, command, responseClass);
+		}
 		return response;
 	}
 	
 	@Override
-	public <E extends RespType> E send(String key, String command, Class<E> responseClass)
-			throws IOException, RespException {
+	public <E extends RespType> E send(String key, String command, Class<E> responseClass) throws IOException, RespException {
 		Integer slot = findSlot(key);
 		RespClient client = findClient(slot);
-		E response = client.send(command, responseClass);		
+		E response = null;
+		try {
+			response = client.send(command, responseClass);
+		} catch (RespException e) {
+			response = handleRedirectException(e, command, responseClass);
+		}
 		return response;
 	}	
-
+	
+	private <E extends RespType> E handleRedirectException(RespException e, String command, Class<E> responseClass) throws RespException, IOException
+	{
+		if (e instanceof MovedException)
+		{
+			return handleMovedException((MovedException) e, command, responseClass);
+		} else if (e instanceof AskException)
+		{
+			return handleAskException((AskException) e, command, responseClass); 
+		} else
+		{
+			throw e;
+		}
+	}
+	
+	
+	
+	private <E extends RespType> E handleAskException(AskException e, String command, Class<E> responseClass) throws RespException, IOException
+	{
+		RespClient client = findClient(e);
+		E resp = client.send(command, responseClass);
+		return resp;
+	}
+	
+	private RespClient findClient(AskException e) throws IOException
+	{
+		String message = e.getMessage();
+		RedirectionParser<AskInfo> parser = new RedisAskRedirectionParser();
+		AskInfo info = parser.parse(message);
+		RespClient client = respClientFactory.getInstanceFromAddress(info.getAddress());
+		return client;
+	}
+	
+	private <E extends RespType> E handleMovedException(MovedException e, String command, Class<E> responseClass) throws RespException, IOException
+	{
+		RespClient client = findClient(e);
+		E resp = client.send(command, responseClass);
+		return resp;
+		
+	}
+	
+	private RespClient findClient(MovedException e) throws IOException
+	{
+		String message = e.getMessage();
+		RedirectionParser<MovedInfo> parser = new RedisMovedRedirectionParser();
+		MovedInfo info = parser.parse(message);
+		RespClient client = respClientFactory.getInstanceFromAddress(info.getAddress());
+		return client;
+	}	
+	
 	public void setSeedEndpoints(List<InetSocketAddress> seedEndpoints) {
 		this.seedEndpoints = seedEndpoints;
 	}

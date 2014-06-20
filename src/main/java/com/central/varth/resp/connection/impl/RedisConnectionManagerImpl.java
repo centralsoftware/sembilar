@@ -178,9 +178,7 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 	{
 		if (e instanceof MovedException)
 		{
-			E response = handleMovedException((MovedException) e, command, responseClass);
-			init();
-			return response;
+			return handleMovedException((MovedException) e, command, responseClass);
 		} else if (e instanceof AskException)
 		{
 			return handleAskException((AskException) e, command, responseClass); 
@@ -210,8 +208,8 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 	{
 		RespClient client = findClient(e);
 		E resp = client.send(command, responseClass);
-		return resp;
-		
+		init();						
+		return resp;		
 	}
 	
 	private RespClient findClient(MovedException e) throws IOException

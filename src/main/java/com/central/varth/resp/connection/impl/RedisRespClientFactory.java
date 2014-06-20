@@ -23,6 +23,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.central.varth.resp.RespException;
 import com.central.varth.resp.cluster.ClusterNode;
 import com.central.varth.resp.connection.RespClient;
 import com.central.varth.resp.connection.RespClientFactory;
@@ -54,12 +55,21 @@ public class RedisRespClientFactory implements RespClientFactory
 	}
 
 	@Override
-	public List<RespClient> getInstancesFromNodes(List<ClusterNode> nodes) throws IOException {
+	public List<RespClient> getInstancesFromNodes(List<ClusterNode> nodes) throws RespException {
 		List<RespClient> clients = new ArrayList<RespClient>();
+		List<Exception> exceptions = new ArrayList<Exception>(); 
 		for (ClusterNode node:nodes)
 		{
-			RespClient client = this.getInstanceFromNode(node);
-			clients.add(client);
+			try {
+				RespClient client = this.getInstanceFromNode(node);
+				clients.add(client);
+			} catch (IOException e) {
+				exceptions.add(e);
+			}			
+		}
+		if (exceptions.size() != 0)
+		{
+			throw new RespException("Cannot connect to nodes: " + exceptions);
 		}
 		return clients;
 	}

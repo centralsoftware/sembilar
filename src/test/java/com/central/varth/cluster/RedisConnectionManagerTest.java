@@ -2,6 +2,8 @@ package com.central.varth.cluster;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -15,6 +17,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.central.varth.resp.MovedException;
 import com.central.varth.resp.RespException;
 import com.central.varth.resp.cluster.ClusterNode;
 import com.central.varth.resp.command.ClusterService;
@@ -24,6 +27,7 @@ import com.central.varth.resp.connection.RespClientFactory;
 import com.central.varth.resp.connection.impl.RedisConnectionManagerImpl;
 import com.central.varth.resp.connection.impl.RedisRespClientFactory;
 import com.central.varth.resp.connection.impl.RedisRespClientImpl;
+import com.central.varth.resp.type.SimpleString;
 
 public class RedisConnectionManagerTest {
 
@@ -43,24 +47,27 @@ public class RedisConnectionManagerTest {
 	@Mock
 	ClusterService clusterService;
 	
+	@Mock
+	RespClient oldNodeClient;
+	
+	@Mock
+	RespClient newNodeClient;
+	
 	@Before
 	public void setUp() throws IOException, RespException
 	{
 		MockitoAnnotations.initMocks(this);
-		List<RespClient> clients = generateClients();
+		
 		endpoints.add(new InetSocketAddress("localhost", 7001));
 		endpoints.add(new InetSocketAddress("localhost", 7002));
-		
-		
+				
 		client7001 = new RedisRespClientImpl("localhost", 7001, false);
 		client7002 = new RedisRespClientImpl("localhost", 7002, false);
 		client7003 = new RedisRespClientImpl("localhost", 7003, false);
 		client7004 = new RedisRespClientImpl("localhost", 7004, false);
 		client7005 = new RedisRespClientImpl("localhost", 7005, false);
 		
-		when(factory.getInstanceFromAddress(any(InetSocketAddress.class))).thenReturn(client7001);
-		when(factory.getInstanceFromNode(any(ClusterNode.class))).thenReturn(client7001);	
-		when(factory.getInstancesFromNodes(anyListOf(ClusterNode.class))).thenReturn(clients);
+
 	}
 	
 	private List<RespClient> generateClients()
@@ -74,31 +81,62 @@ public class RedisConnectionManagerTest {
 		return clients;
 	}
 	
+	private void prepareInitialization() throws IOException, RespException
+	{
+		List<RespClient> clients = generateClients();
+		when(factory.getInstanceFromAddress(any(InetSocketAddress.class))).thenReturn(client7001);
+		when(factory.getInstanceFromNode(any(ClusterNode.class))).thenReturn(client7001);	
+		when(factory.getInstancesFromNodes(anyListOf(ClusterNode.class))).thenReturn(clients);		
+	}
+	
+	private void prepareMigratedClients() throws IOException, RespException
+	{
+		SimpleString okString = new SimpleString();
+		okString.setString("OK");
+		when(oldNodeClient.send(anyString(), eq(SimpleString.class))).thenThrow(new MovedException("-MOVED 3999 127.0.0.1:6381"));
+		when(newNodeClient.send(anyString(), eq(SimpleString.class))).thenReturn(okString);
+	}
+	
 	@Test
-	public void connectionManagerSuccessInitialization() throws RespException
+	public void connectionManagerSuccessInitialization() throws RespException, IOException
 	{		
-		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);		
+		prepareInitialization();
+		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);
 		List<RespClient> clients = connectionManager.getClients();
 		Assert.assertEquals(5, clients.size());
 	}
 	
 	@Test(expected = RespException.class)
-	public void connectionManagerFailedInitialization() throws RespException
+	public void connectionManagerFailedInitialization() throws RespException, IOException
 	{
+		prepareInitialization();
 		List<InetSocketAddress> endpoints = new ArrayList<InetSocketAddress>();
 		endpoints.add(new InetSocketAddress("localhost", 7010));
 		endpoints.add(new InetSocketAddress("localhost", 7011));
 		
 		RespClientFactory builder = new RedisRespClientFactory();
-		connectionManager = new RedisConnectionManagerImpl(endpoints, builder, clusterService);		
+		connectionManager = new RedisConnectionManagerImpl(endpoints, builder, clusterService);
 	}
 	
 	@Test
-	public void findSlotTest() throws RespException
+	public void findSlotTest() throws RespException, IOException
 	{
-		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);		
+		prepareInitialization();
+		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);
 		int slot = connectionManager.findSlot("123456789");
 		Assert.assertEquals(12739, slot);
+	}
+	
+	//@Test
+	public void sendCommandWithoutKeyTest() throws IOException, RespException
+	{
+		prepareMigratedClients();
+		List<RespClient> clients = new ArrayList<RespClient>();
+		clients.add(oldNodeClient);
+		when(factory.getInstancesFromNodes(anyListOf(ClusterNode.class))).thenReturn(clients);
+		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);
+		SimpleString resp = connectionManager.send("PING", SimpleString.class);
+		Assert.assertNotNull(resp);
 	}
 	
 }

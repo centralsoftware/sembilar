@@ -19,7 +19,6 @@
 package com.central.varth.resp.connection;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.List;
 
 import com.central.varth.resp.RespException;
@@ -27,7 +26,6 @@ import com.central.varth.resp.type.RespType;
 
 public interface ConnectionManager {
 
-	public void setSeedEndpoints(List<InetSocketAddress> seedEndpoints);	
 	public <T extends RespType> T send(String command, Class<T> responseClass) throws IOException, RespException;
 	public <T extends RespType> T send(String key, String command, Class<T> responseClass) throws IOException, RespException;
 	public Integer findSlot(String key);

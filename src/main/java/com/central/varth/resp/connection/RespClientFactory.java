@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+import com.central.varth.resp.RespException;
 import com.central.varth.resp.cluster.ClusterNode;
 
 public interface RespClientFactory {
@@ -29,5 +30,5 @@ public interface RespClientFactory {
 	public RespClient getInstanceFromNode(ClusterNode node) throws IOException;
 	public RespClient getInstanceFromAddress(InetSocketAddress address) throws IOException;
 	public List<RespClient> getInstancesFromAddress(List<InetSocketAddress> addresses) throws IOException;
-	public List<RespClient> getInstancesFromNodes(List<ClusterNode> nodes) throws IOException;
+	public List<RespClient> getInstancesFromNodes(List<ClusterNode> nodes) throws RespException;
 }

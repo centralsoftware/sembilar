@@ -34,15 +34,15 @@ import org.mockito.MockitoAnnotations;
 import com.central.varth.resp.ProtocolConstant;
 import com.central.varth.resp.RespException;
 import com.central.varth.resp.cluster.ClusterNode;
-import com.central.varth.resp.cluster.ClusterNodeParser;
 import com.central.varth.resp.cluster.DefaultSlotMappingService;
-import com.central.varth.resp.cluster.RedisClusterNodeParser;
 import com.central.varth.resp.cluster.SlotMappingService;
 import com.central.varth.resp.connection.ConnectionManager;
 import com.central.varth.resp.connection.RespClient;
 import com.central.varth.resp.connection.RespClientFactory;
 import com.central.varth.resp.connection.impl.RedisConnectionManagerImpl;
 import com.central.varth.resp.connection.impl.RedisRespClientImpl;
+import com.central.varth.resp.parser.ClusterNodeParser;
+import com.central.varth.resp.parser.impl.RedisClusterNodeParser;
 
 @Ignore
 public class SlotMappingTest {
@@ -67,7 +67,7 @@ public class SlotMappingTest {
 		ClusterNodeParser parser = new RedisClusterNodeParser();
 		nodes = parser.parse(rawClusterInfo);
 		prepareClientBuilder();
-		ConnectionManager connectionManager = new RedisConnectionManagerImpl(null,null,null);
+		ConnectionManager connectionManager = new RedisConnectionManagerImpl(null, null, null);
 		clients = connectionManager.getClients();
 	}
 	
@@ -98,9 +98,9 @@ public class SlotMappingTest {
 	}
 	
 	@Test
-	public void getSlotTest() throws RespException
+	public void getSlotTest() throws RespException, IOException
 	{
-		ConnectionManager connectionManager = new RedisConnectionManagerImpl(null,null,null);
+		ConnectionManager connectionManager = new RedisConnectionManagerImpl(null, null, null);
 		Integer slot = connectionManager.findSlot("1234567890");
 		Assert.assertEquals(new Integer(4897), slot);
 	}

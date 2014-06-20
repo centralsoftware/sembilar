@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.central.varth.resp.AskException;
 import com.central.varth.resp.AskInfo;
@@ -44,18 +46,22 @@ import com.central.varth.resp.type.RespType;
 
 public class RedisConnectionManagerImpl implements ConnectionManager 
 {
+		
+	private final static long NODES_EXPIRY_PERIOD = 5*1000;
 	
-	private List<RespClient> nodeClients = new ArrayList<RespClient>();
+	private long lastNodesCreation = 0L;
 	
-	private List<RespClient> seedEndpointClients = new ArrayList<RespClient>();
+	private CopyOnWriteArrayList<RespClient> nodeClients = new CopyOnWriteArrayList<RespClient>();
+	
+	private CopyOnWriteArrayList<RespClient> seedEndpointClients = new CopyOnWriteArrayList<RespClient>();
 
-	private List<InetSocketAddress> seedEndpoints = new ArrayList<InetSocketAddress>();
+	private List<InetSocketAddress> seedEndpoints = new CopyOnWriteArrayList<InetSocketAddress>();
 
 	private RespClientFactory respClientFactory = new RedisRespClientFactory();
 
 	private ClusterService clusterService = new RedisClusterServiceImpl();	
 	
-	public RedisConnectionManagerImpl(List<InetSocketAddress> seedEndpoints, RespClientFactory factory, ClusterService clusterService) throws RespException
+	public RedisConnectionManagerImpl(List<InetSocketAddress> seedEndpoints, RespClientFactory factory, ClusterService clusterService) throws RespException, IOException
 	{
 		this.seedEndpoints = seedEndpoints;
 		this.respClientFactory = factory;
@@ -85,34 +91,36 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 		return res;
 	}
 
-	protected void init() throws RespException 
+	protected void init() throws IOException, RespException 
 	{
-		this.seedEndpointClients = new ArrayList<RespClient>();
-		initSeedClients();
-		
-		List<String> errors = new ArrayList<String>();
-		for (RespClient seedClient:seedEndpointClients)
+		if (!isNodesCreationExpired())
 		{
-			try {
-				nodeClients = buildAllClients(seedClient);
-				break;
-			} catch (IOException | RespException e) {
-				errors.add("Failed to contact " + seedClient + " with error " + e.getMessage());
-			}
-		}
-		if (nodeClients.size() == 0)
-		{
-			throw new RespException("Initialization failed due to: " + errors);
-		}
+			return;
+		}		
+		initSeeds();
+		initNodes();		
+		Date now = new Date();
+		this.lastNodesCreation = now.getTime();		
 	}
 
-	private void initSeedClients() throws RespException {
+	private boolean isNodesCreationExpired()
+	{
+		Date now = new Date();
+		if (now.getTime() - this.lastNodesCreation < NODES_EXPIRY_PERIOD)
+		{
+			return false;
+		} else
+		{
+			return true;
+		}
+	}
+	private void initSeeds() throws RespException {
 		List<String> errors = new ArrayList<String>();
 		for (InetSocketAddress address:this.seedEndpoints)
 		{
 			try {
 				RespClient client = respClientFactory.getInstanceFromAddress(address);
-				seedEndpointClients.add(client);
+				seedEndpointClients.addIfAbsent(client);
 			} catch (IOException e) {
 				errors.add("Failed during connect to: " + address);
 			}			
@@ -127,12 +135,18 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 		return nodeClients;
 	}
 
-	private List<RespClient> buildAllClients(RespClient seedClient) throws IOException, RespException
+	private void initNodes() throws IOException, RespException
 	{
-		List<RespClient> clients = new ArrayList<RespClient>();
 		List<ClusterNode> nodes = clusterService.buildClusterNode();
-		clients = respClientFactory.getInstancesFromNodes(nodes);
-		return clients;
+		List<RespClient> clients = respClientFactory.getInstancesFromNodes(nodes);
+		for (RespClient client:clients)
+		{
+			this.nodeClients.addIfAbsent(client);
+		}
+		if (nodeClients.size() == 0)
+		{
+			throw new RespException("Initialization failed, cannot find nodes");
+		}		
 	}
 
 	@Override
@@ -164,7 +178,9 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 	{
 		if (e instanceof MovedException)
 		{
-			return handleMovedException((MovedException) e, command, responseClass);
+			E response = handleMovedException((MovedException) e, command, responseClass);
+			init();
+			return response;
 		} else if (e instanceof AskException)
 		{
 			return handleAskException((AskException) e, command, responseClass); 
@@ -173,8 +189,6 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 			throw e;
 		}
 	}
-	
-	
 	
 	private <E extends RespType> E handleAskException(AskException e, String command, Class<E> responseClass) throws RespException, IOException
 	{
@@ -209,10 +223,6 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 		return client;
 	}	
 	
-	public void setSeedEndpoints(List<InetSocketAddress> seedEndpoints) {
-		this.seedEndpoints = seedEndpoints;
-	}
-
 	@Override
 	public RespClient getClientFromPool() {
 		int index = getClientIndex();

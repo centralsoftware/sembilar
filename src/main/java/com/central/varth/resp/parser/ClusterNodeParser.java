@@ -16,9 +16,11 @@
  * 
  */
 
-package com.central.varth.resp.cluster;
+package com.central.varth.resp.parser;
 
 import java.util.List;
+
+import com.central.varth.resp.cluster.ClusterNode;
 
 public interface ClusterNodeParser {
 

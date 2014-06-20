@@ -16,7 +16,7 @@
  * 
  */
 
-package com.central.varth.resp.cluster;
+package com.central.varth.resp.parser.impl;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ import java.util.List;
 
 import com.central.varth.resp.Flags;
 import com.central.varth.resp.ProtocolConstant;
+import com.central.varth.resp.cluster.ClusterNode;
+import com.central.varth.resp.parser.ClusterNodeParser;
 
 public class RedisClusterNodeParser implements ClusterNodeParser 
 {

@@ -24,8 +24,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.central.varth.resp.cluster.ClusterNode;
-import com.central.varth.resp.cluster.ClusterNodeParser;
-import com.central.varth.resp.cluster.RedisClusterNodeParser;
+import com.central.varth.resp.parser.ClusterNodeParser;
+import com.central.varth.resp.parser.impl.RedisClusterNodeParser;
 
 public class ClusterNodeTest {
 

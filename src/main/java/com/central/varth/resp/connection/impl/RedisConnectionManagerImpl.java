@@ -156,7 +156,7 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 		try {
 			response = client.send(command, responseClass);
 		} catch (RespException e) {
-			handleRedirectException(e, command, responseClass);
+			response = handleRedirectException(e, command, responseClass);
 		}
 		return response;
 	}
@@ -231,7 +231,7 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 	private int getClientIndex()
 	{
 		int max = nodeClients.size();
-		double rand = max*Math.random();
+		double rand = (max-1)*Math.random();
 		BigDecimal index = new BigDecimal(String.valueOf(rand));
 		index = index.setScale(0, BigDecimal.ROUND_HALF_UP);
 		return index.intValue();

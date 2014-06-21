@@ -5,6 +5,8 @@ import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,6 +19,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.central.varth.resp.AskException;
 import com.central.varth.resp.MovedException;
 import com.central.varth.resp.RespException;
 import com.central.varth.resp.cluster.ClusterNode;
@@ -53,13 +56,19 @@ public class RedisConnectionManagerTest {
 	@Mock
 	RespClient newNodeClient;
 	
+	@Mock
+	RespClient normalClient;	
+	
+	InetSocketAddress address7001 = new InetSocketAddress("localhost", 7001);
+	InetSocketAddress address7002 = new InetSocketAddress("localhost", 7002);	
+	
 	@Before
 	public void setUp() throws IOException, RespException
 	{
 		MockitoAnnotations.initMocks(this);
 		
-		endpoints.add(new InetSocketAddress("localhost", 7001));
-		endpoints.add(new InetSocketAddress("localhost", 7002));
+		endpoints.add(address7001);
+		endpoints.add(address7002);
 				
 		client7001 = new RedisRespClientImpl("localhost", 7001, false);
 		client7002 = new RedisRespClientImpl("localhost", 7002, false);
@@ -89,13 +98,28 @@ public class RedisConnectionManagerTest {
 		when(factory.getInstancesFromNodes(anyListOf(ClusterNode.class))).thenReturn(clients);		
 	}
 	
+	private void prepareMigratingClients() throws IOException, RespException
+	{
+		SimpleString okString = new SimpleString();
+		okString.setString("OK");
+		when(oldNodeClient.send(anyString(), eq(SimpleString.class))).thenThrow(new AskException("-ASK 3999 127.0.0.1:6381"));
+		when(newNodeClient.send(anyString(), eq(SimpleString.class))).thenReturn(okString);
+	}
+	
 	private void prepareMigratedClients() throws IOException, RespException
 	{
 		SimpleString okString = new SimpleString();
 		okString.setString("OK");
 		when(oldNodeClient.send(anyString(), eq(SimpleString.class))).thenThrow(new MovedException("-MOVED 3999 127.0.0.1:6381"));
 		when(newNodeClient.send(anyString(), eq(SimpleString.class))).thenReturn(okString);
-	}
+	}	
+	
+	private void prepareNormalClients() throws IOException, RespException
+	{
+		SimpleString okString = new SimpleString();
+		okString.setString("OK");
+		when(normalClient.send(anyString(), eq(SimpleString.class))).thenReturn(okString);
+	}	
 	
 	@Test
 	public void connectionManagerSuccessInitialization() throws RespException, IOException
@@ -127,16 +151,47 @@ public class RedisConnectionManagerTest {
 		Assert.assertEquals(12739, slot);
 	}
 	
-	//@Test
+	@Test
 	public void sendCommandWithoutKeyTest() throws IOException, RespException
+	{
+		prepareNormalClients();
+		List<RespClient> clients = new ArrayList<RespClient>();
+		clients.add(normalClient);
+		when(factory.getInstancesFromNodes(anyListOf(ClusterNode.class))).thenReturn(clients);
+		when(factory.getInstanceFromAddress(any(InetSocketAddress.class))).thenReturn(client7001);
+		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);
+		SimpleString resp = connectionManager.send("PING", SimpleString.class);
+		Assert.assertNotNull(resp);
+	}
+	
+	@Test
+	public void askRedirectionTest() throws IOException, RespException
+	{
+		prepareMigratingClients();
+		List<RespClient> clients = new ArrayList<RespClient>();
+		clients.add(oldNodeClient);
+		when(factory.getInstancesFromNodes(anyListOf(ClusterNode.class))).thenReturn(clients);
+		when(factory.getInstanceFromAddress(any(InetSocketAddress.class))).thenReturn(newNodeClient);
+		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);
+		SimpleString resp = connectionManager.send("PING", SimpleString.class);
+		Assert.assertNotNull(resp);
+		verify(factory).getInstancesFromNodes(anyListOf(ClusterNode.class));
+		verify(factory, times(3)).getInstanceFromAddress(any(InetSocketAddress.class));		
+	}	
+	
+	@Test
+	public void movedRedirectionTest() throws IOException, RespException
 	{
 		prepareMigratedClients();
 		List<RespClient> clients = new ArrayList<RespClient>();
 		clients.add(oldNodeClient);
 		when(factory.getInstancesFromNodes(anyListOf(ClusterNode.class))).thenReturn(clients);
+		when(factory.getInstanceFromAddress(any(InetSocketAddress.class))).thenReturn(newNodeClient);
 		connectionManager = new RedisConnectionManagerImpl(endpoints, factory, clusterService);
 		SimpleString resp = connectionManager.send("PING", SimpleString.class);
 		Assert.assertNotNull(resp);
-	}
+		verify(factory).getInstancesFromNodes(anyListOf(ClusterNode.class));
+		verify(factory, times(3)).getInstanceFromAddress(any(InetSocketAddress.class));
+	}		
 	
 }

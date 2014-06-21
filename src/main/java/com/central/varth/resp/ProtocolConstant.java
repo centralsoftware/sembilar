@@ -27,6 +27,7 @@ public class ProtocolConstant {
 	public final static String COMMAND_ASTERISK = "*";
 	public final static String COMMAND_DOLLAR = "$";
 	public final static String SPACE = " ";
+	public final static String COLON = ":";
 	public final static String SEMICOLON = ";";
 	public final static String RESPONSE_OK = "OK";
 	public final static String RESPONSE_MOVED = "MOVED";

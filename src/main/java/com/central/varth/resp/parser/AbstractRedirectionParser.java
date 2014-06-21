@@ -14,7 +14,7 @@ public abstract class AbstractRedirectionParser<T> implements RedirectionParser<
 	 */
 	protected InetSocketAddress getAddress(String addressPort)
 	{
-		String[] addressPortArr = addressPort.split(ProtocolConstant.SEMICOLON);
+		String[] addressPortArr = addressPort.split(ProtocolConstant.COLON);
 		String address = addressPortArr[0];
 		int port = Integer.parseInt(addressPortArr[1]);
 		return new InetSocketAddress(address, port);

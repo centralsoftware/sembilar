@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/centralsoftware/sembilar.svg?branch=master)](https://travis-ci.org/centralsoftware/sembilar.svg?branch=master)
+[![Build Status](https://travis-ci.org/zentralsoftware/sembilar.svg?branch=master)](https://travis-ci.org/zentralsoftware/sembilar.svg?branch=master)
 
 # Sembilar
 Sembilar is a library for RESP (Redis Serialization Protocol) client. 

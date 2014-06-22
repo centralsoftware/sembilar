@@ -2,7 +2,7 @@ package com.central.sembilar.resp.parser;
 
 import java.net.InetSocketAddress;
 
-import com.central.varth.resp.ProtocolConstant;
+import com.central.sembilar.resp.ProtocolConstant;
 
 public abstract class AbstractRedirectionParser<T> implements RedirectionParser<T>
 {

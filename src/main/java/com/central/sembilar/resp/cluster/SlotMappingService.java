@@ -16,23 +16,15 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp.cluster;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.List;
+import java.util.Map;
 
-import com.central.sembilar.resp.RespSerializer;
+import com.central.sembilar.resp.connection.RespClient;
 
-public class RespSerializerTest {
+public interface SlotMappingService {
 
-	@Test
-	public void pingCommand()
-	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
-	}
+	public Map<Integer, RespClient> buildMap(List<RespClient> clients);
+	public Map<Integer, RespClient> getSlotMap();
 }

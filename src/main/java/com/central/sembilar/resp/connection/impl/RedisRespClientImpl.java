@@ -25,11 +25,11 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
-import com.central.varth.resp.RespDeserializer;
-import com.central.varth.resp.RespException;
-import com.central.varth.resp.cluster.ClusterNode;
-import com.central.varth.resp.connection.RespClient;
-import com.central.varth.resp.type.RespType;
+import com.central.sembilar.resp.RespDeserializer;
+import com.central.sembilar.resp.RespException;
+import com.central.sembilar.resp.cluster.ClusterNode;
+import com.central.sembilar.resp.connection.RespClient;
+import com.central.sembilar.resp.type.RespType;
 
 public class RedisRespClientImpl implements RespClient {
 

@@ -31,18 +31,18 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.central.sembilar.resp.ProtocolConstant;
+import com.central.sembilar.resp.RespException;
+import com.central.sembilar.resp.cluster.ClusterNode;
+import com.central.sembilar.resp.cluster.DefaultSlotMappingService;
+import com.central.sembilar.resp.cluster.SlotMappingService;
+import com.central.sembilar.resp.connection.ConnectionManager;
+import com.central.sembilar.resp.connection.RespClient;
+import com.central.sembilar.resp.connection.RespClientFactory;
 import com.central.sembilar.resp.connection.impl.RedisConnectionManagerImpl;
 import com.central.sembilar.resp.connection.impl.RedisRespClientImpl;
 import com.central.sembilar.resp.parser.ClusterNodeParser;
 import com.central.sembilar.resp.parser.impl.RedisClusterNodeParser;
-import com.central.varth.resp.ProtocolConstant;
-import com.central.varth.resp.RespException;
-import com.central.varth.resp.cluster.ClusterNode;
-import com.central.varth.resp.cluster.DefaultSlotMappingService;
-import com.central.varth.resp.cluster.SlotMappingService;
-import com.central.varth.resp.connection.ConnectionManager;
-import com.central.varth.resp.connection.RespClient;
-import com.central.varth.resp.connection.RespClientFactory;
 
 @Ignore
 public class SlotMappingTest {

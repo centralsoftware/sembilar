@@ -3,7 +3,7 @@ package com.central.varth.crc;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.central.varth.resp.crc.CRC16;
+import com.central.sembilar.resp.crc.CRC16;
 
 public class Crc16 {
 

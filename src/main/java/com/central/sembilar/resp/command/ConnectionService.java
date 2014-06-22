@@ -16,23 +16,15 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.io.IOException;
 
-import com.central.sembilar.resp.RespSerializer;
+import com.central.sembilar.resp.RespException;
 
-public class RespSerializerTest {
+public interface ConnectionService extends CommandService {
 
-	@Test
-	public void pingCommand()
-	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
-	}
+	public String auth(String password) throws IOException, RespException;
+	public String ping() throws IOException, RespException;
+	public String echo(String message) throws IOException, RespException;	
 }

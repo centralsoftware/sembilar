@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright 2014 Central Software
+ * Copyright ${year} Central Software
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,18 @@
  * limitations under the License.
  * 
  */
+package com.central.sembilar.resp.type;
 
-package com.central.varth.resp;
 
-import org.junit.Assert;
-import org.junit.Test;
+public class RespError extends RespType 
+{
+	private String error;
 
-import com.central.sembilar.resp.RespSerializer;
+	public String getError() {
+		return error;
+	}
 
-public class RespSerializerTest {
-
-	@Test
-	public void pingCommand()
-	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
+	public void setError(String error) {
+		this.error = error;
 	}
 }

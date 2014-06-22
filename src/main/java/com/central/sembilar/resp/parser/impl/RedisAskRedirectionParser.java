@@ -1,8 +1,8 @@
 package com.central.sembilar.resp.parser.impl;
 
+import com.central.sembilar.resp.AskInfo;
+import com.central.sembilar.resp.ProtocolConstant;
 import com.central.sembilar.resp.parser.AbstractRedirectionParser;
-import com.central.varth.resp.AskInfo;
-import com.central.varth.resp.ProtocolConstant;
 
 public class RedisAskRedirectionParser extends AbstractRedirectionParser<AskInfo>
 {

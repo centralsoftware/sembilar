@@ -19,18 +19,18 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.central.sembilar.resp.AskException;
+import com.central.sembilar.resp.MovedException;
+import com.central.sembilar.resp.RespException;
+import com.central.sembilar.resp.cluster.ClusterNode;
+import com.central.sembilar.resp.command.ClusterService;
+import com.central.sembilar.resp.connection.ConnectionManager;
+import com.central.sembilar.resp.connection.RespClient;
+import com.central.sembilar.resp.connection.RespClientFactory;
 import com.central.sembilar.resp.connection.impl.RedisConnectionManagerImpl;
 import com.central.sembilar.resp.connection.impl.RedisRespClientFactory;
 import com.central.sembilar.resp.connection.impl.RedisRespClientImpl;
-import com.central.varth.resp.AskException;
-import com.central.varth.resp.MovedException;
-import com.central.varth.resp.RespException;
-import com.central.varth.resp.cluster.ClusterNode;
-import com.central.varth.resp.command.ClusterService;
-import com.central.varth.resp.connection.ConnectionManager;
-import com.central.varth.resp.connection.RespClient;
-import com.central.varth.resp.connection.RespClientFactory;
-import com.central.varth.resp.type.SimpleString;
+import com.central.sembilar.resp.type.SimpleString;
 
 public class RedisConnectionManagerTest {
 

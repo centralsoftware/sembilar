@@ -26,11 +26,15 @@ import org.junit.Test;
 
 import redis.clients.util.RedisInputStream;
 
-import com.central.varth.resp.type.BulkString;
-import com.central.varth.resp.type.RespArray;
-import com.central.varth.resp.type.RespInteger;
-import com.central.varth.resp.type.RespType;
-import com.central.varth.resp.type.SimpleString;
+import com.central.sembilar.resp.AskException;
+import com.central.sembilar.resp.MovedException;
+import com.central.sembilar.resp.RespDeserializer;
+import com.central.sembilar.resp.RespException;
+import com.central.sembilar.resp.type.BulkString;
+import com.central.sembilar.resp.type.RespArray;
+import com.central.sembilar.resp.type.RespInteger;
+import com.central.sembilar.resp.type.RespType;
+import com.central.sembilar.resp.type.SimpleString;
 
 public class RespDeserializerTest {
 

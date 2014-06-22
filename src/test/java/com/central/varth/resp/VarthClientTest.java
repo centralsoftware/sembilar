@@ -29,9 +29,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.central.varth.resp.type.BulkString;
-import com.central.varth.resp.type.RespArray;
-import com.central.varth.resp.type.SimpleString;
+import com.central.sembilar.resp.RespDeserializer;
+import com.central.sembilar.resp.RespException;
+import com.central.sembilar.resp.type.BulkString;
+import com.central.sembilar.resp.type.RespArray;
+import com.central.sembilar.resp.type.SimpleString;
 
 @Ignore
 public class VarthClientTest {

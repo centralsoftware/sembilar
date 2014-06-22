@@ -1,6 +1,6 @@
 package com.central.sembilar.resp.parser;
 
-import com.central.varth.resp.AskInfo;
+import com.central.sembilar.resp.AskInfo;
 
 public interface AskRedirectionParser extends RedirectionParser<AskInfo> {
 

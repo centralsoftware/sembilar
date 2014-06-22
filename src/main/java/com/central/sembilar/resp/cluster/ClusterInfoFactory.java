@@ -16,23 +16,8 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp.cluster;
 
-import org.junit.Assert;
-import org.junit.Test;
+public class ClusterInfoFactory {
 
-import com.central.sembilar.resp.RespSerializer;
-
-public class RespSerializerTest {
-
-	@Test
-	public void pingCommand()
-	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
-	}
 }

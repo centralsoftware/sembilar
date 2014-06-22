@@ -16,23 +16,32 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp;
 
-import org.junit.Assert;
-import org.junit.Test;
 
-import com.central.sembilar.resp.RespSerializer;
-
-public class RespSerializerTest {
-
-	@Test
-	public void pingCommand()
+public enum Flags {
+	MYSELF("myself"), MASTER("master"), SLAVE("slave"), FAIL("fail");
+	String name;
+	Flags(String name)
 	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
+		this.name = name;
+	}
+	String getName()
+	{
+		return this.name;
+	}
+	public static Flags fromName(String name)
+	{
+		if (name != null)
+		{
+			for (Flags flag:Flags.values())
+			{
+				if (name.equals(flag.getName()))
+				{
+					return flag;
+				}
+			}
+		}
+		return null;
 	}
 }

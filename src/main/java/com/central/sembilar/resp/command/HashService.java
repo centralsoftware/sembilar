@@ -16,23 +16,16 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import com.central.sembilar.resp.type.BulkString;
+import com.central.sembilar.resp.type.RespArray;
+import com.central.sembilar.resp.type.RespInteger;
 
-import com.central.sembilar.resp.RespSerializer;
+public interface HashService extends CommandService {
 
-public class RespSerializerTest {
-
-	@Test
-	public void pingCommand()
-	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
-	}
+	public RespInteger hset(String key, String field, String value);
+	public BulkString hget(String key, String field);
+	public RespArray hkeys(String key);
+	public RespInteger hlen(String key);
 }

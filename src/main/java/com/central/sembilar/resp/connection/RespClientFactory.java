@@ -16,13 +16,19 @@
  * 
  */
 
-package com.central.sembilar.resp.parser;
+package com.central.sembilar.resp.connection;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.List;
 
+import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.cluster.ClusterNode;
 
-public interface ClusterNodeParser {
+public interface RespClientFactory {
 
-	public List<ClusterNode> parse(String raw);
+	public RespClient getInstanceFromNode(ClusterNode node) throws IOException;
+	public RespClient getInstanceFromAddress(InetSocketAddress address) throws IOException;
+	public List<RespClient> getInstancesFromAddress(List<InetSocketAddress> addresses) throws IOException;
+	public List<RespClient> getInstancesFromNodes(List<ClusterNode> nodes) throws RespException;
 }

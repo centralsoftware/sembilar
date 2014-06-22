@@ -16,23 +16,11 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import com.central.sembilar.resp.connection.ConnectionManager;
 
-import com.central.sembilar.resp.RespSerializer;
+public interface CommandService {
 
-public class RespSerializerTest {
-
-	@Test
-	public void pingCommand()
-	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
-	}
+	public void setConnectionManager(ConnectionManager connectionManager);
 }

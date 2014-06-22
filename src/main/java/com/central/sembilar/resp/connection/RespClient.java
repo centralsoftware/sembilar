@@ -16,23 +16,21 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp.connection;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.io.IOException;
 
-import com.central.sembilar.resp.RespSerializer;
+import com.central.sembilar.resp.RespException;
+import com.central.sembilar.resp.cluster.ClusterNode;
+import com.central.sembilar.resp.type.RespType;
 
-public class RespSerializerTest {
+public interface RespClient {
 
-	@Test
-	public void pingCommand()
-	{
-		String command = "PING";
-		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
-		String cmdz = serializer.serialize(command);
-		System.err.println(cmdz);
-		Assert.assertEquals(expCommand, cmdz);		
-	}
+	public void connect(String hostname, int port) throws IOException;
+	
+	public void connect(ClusterNode node) throws IOException;
+	
+	public <T extends RespType> T send(String command, Class<T> responseClass) throws IOException, RespException;
+	
+	public boolean hasSlot(int slot);
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  * 
  */
-package com.central.varth;
+package com.central.sembilar;
 
 import java.io.BufferedReader;
 import java.io.IOException;

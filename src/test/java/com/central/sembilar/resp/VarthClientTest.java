@@ -16,7 +16,7 @@
  * 
  */
 
-package com.central.varth.resp;
+package com.central.sembilar.resp;
 
 import java.io.IOException;
 import java.io.InputStream;

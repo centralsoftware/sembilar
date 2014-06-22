@@ -1,4 +1,4 @@
-package com.central.varth.cluster;
+package com.central.sembilar.cluster;
 
 import java.math.BigDecimal;
 

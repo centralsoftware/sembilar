@@ -16,7 +16,7 @@
  * 
  */
 
-package com.central.varth.cluster;
+package com.central.sembilar.cluster;
 
 import static org.mockito.Mockito.when;
 

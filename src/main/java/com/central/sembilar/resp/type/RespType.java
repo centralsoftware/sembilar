@@ -17,7 +17,7 @@
  */
 package com.central.sembilar.resp.type;
 
-public class RespType {
+public abstract class RespType {
 
 	
 }

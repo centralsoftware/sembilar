@@ -29,17 +29,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.central.sembilar.resp.RespDeserializer;
-import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.type.BulkString;
 import com.central.sembilar.resp.type.RespArray;
 import com.central.sembilar.resp.type.SimpleString;
 
 @Ignore
-public class VarthClientTest {
+public class RedisClientTest {
 
 	String hostname = "localhost";
-	int port = 7004;
+	int port = 7002;
 	Socket redisSocket = new Socket();		
 	OutputStream out;
 	InputStream in;
@@ -77,7 +75,7 @@ public class VarthClientTest {
 		out.write(command.getBytes());
 		redisSocket.getOutputStream().flush();
 
-		RespDeserializer deserializer = new RespDeserializer(in);
+		RespCommandDeserializer deserializer = new RespCommandDeserializer(in);
 		SimpleString response = deserializer.deserialize(SimpleString.class);
 		System.err.println(response);
 
@@ -95,7 +93,7 @@ public class VarthClientTest {
 		String command = "*4\r\n$6\r\nLRANGE\r\n$7\r\nmylist1\r\n$1\r\n0\r\n$2\r\n-1\r\n";
 		out.write(command.getBytes());
 		redisSocket.getOutputStream().flush();
-		RespDeserializer deserializer = new RespDeserializer(in);
+		RespCommandDeserializer deserializer = new RespCommandDeserializer(in);
 		
 		RespArray array = deserializer.deserialize(RespArray.class);
 		System.err.print(array);
@@ -107,7 +105,7 @@ public class VarthClientTest {
 		String command = "*2\r\n$7\r\nCLUSTER\r\n$4\r\nINFO\r\n";
 		out.write(command.getBytes());
 		redisSocket.getOutputStream().flush();
-		RespDeserializer deserializer = new RespDeserializer(in);
+		RespCommandDeserializer deserializer = new RespCommandDeserializer(in);
 		
 		BulkString bulkString = deserializer.deserialize(BulkString.class);
 		System.err.print(bulkString);
@@ -119,9 +117,22 @@ public class VarthClientTest {
 		String command = "*2\r\n$7\r\nCLUSTER\r\n$5\r\nNODES\r\n";
 		out.write(command.getBytes());
 		redisSocket.getOutputStream().flush();
-		RespDeserializer deserializer = new RespDeserializer(in);
+		RespCommandDeserializer deserializer = new RespCommandDeserializer(in);
 		
 		BulkString bulkString = deserializer.deserialize(BulkString.class);
 		System.err.print(bulkString);
 	}		
+	
+	@Test
+	public void nilTest() throws IOException, RespException 
+	{
+		String command = "*3\r\n$4\r\nHGET\r\n$6\r\nmyhash\r\n$6\r\nfield2\r\n";
+		out.write(command.getBytes());
+		redisSocket.getOutputStream().flush();
+		RespCommandDeserializer deserializer = new RespCommandDeserializer(in);
+		
+		BulkString bulkString = deserializer.deserialize(BulkString.class);
+		System.err.print(bulkString);
+	}			
+	
 }

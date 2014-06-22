@@ -31,13 +31,13 @@ import org.mockito.MockitoAnnotations;
 
 import com.central.sembilar.resp.ProtocolConstant;
 import com.central.sembilar.resp.RespException;
-import com.central.sembilar.resp.RespSerializer;
-import com.central.sembilar.resp.command.ConnectionService;
-import com.central.sembilar.resp.command.impl.ConnectionServiceImpl;
+import com.central.sembilar.resp.RespCommandSerializer;
+import com.central.sembilar.resp.command.Connection;
+import com.central.sembilar.resp.command.impl.RedisConnectionImpl;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.type.SimpleString;
 
-public class ConnectionServiceMockTest {
+public class ConnectionCommandTest {
 
 	@Mock
 	private ConnectionManager connectionManager;	
@@ -45,19 +45,19 @@ public class ConnectionServiceMockTest {
 	private SimpleString simpleString = new SimpleString();
 	private String password = "password";
 	private String sentCommand = "";
-	ConnectionService connectionService;
+	Connection connectionCommand;
 	
 	@Before
 	public void setUp() throws IOException, RespException
 	{
 		MockitoAnnotations.initMocks(this);
-		connectionService = new ConnectionServiceImpl();
-		connectionService.setConnectionManager(connectionManager);
+		connectionCommand = new RedisConnectionImpl();
+		connectionCommand.setConnectionManager(connectionManager);
 	}
 	
 	private void prepAuth() throws IOException, RespException
 	{
-		RespSerializer serializer = new RespSerializer();
+		RespCommandSerializer serializer = new RespCommandSerializer();
 		sentCommand = serializer.serialize(ProtocolConstant.COMMAND_AUTH, password);
 		simpleString.setString(ProtocolConstant.RESPONSE_OK);
 		when(connectionManager.send(sentCommand, SimpleString.class)).thenReturn(simpleString);
@@ -65,7 +65,7 @@ public class ConnectionServiceMockTest {
 	
 	private void prepPing() throws IOException, RespException
 	{
-		RespSerializer serializer = new RespSerializer();
+		RespCommandSerializer serializer = new RespCommandSerializer();
 		sentCommand = serializer.serialize(ProtocolConstant.COMMAND_PING);
 		simpleString.setString(ProtocolConstant.RESPONSE_PONG);
 		when(connectionManager.send(sentCommand, SimpleString.class)).thenReturn(simpleString);
@@ -73,7 +73,7 @@ public class ConnectionServiceMockTest {
 	
 	private void prepEcho(String message) throws IOException, RespException
 	{
-		RespSerializer serializer = new RespSerializer();
+		RespCommandSerializer serializer = new RespCommandSerializer();
 		sentCommand = serializer.serialize(ProtocolConstant.COMMAND_ECHO, message);
 		simpleString.setString(message);
 		when(connectionManager.send(sentCommand, SimpleString.class)).thenReturn(simpleString);
@@ -83,7 +83,7 @@ public class ConnectionServiceMockTest {
 	public void testAuth() throws IOException, RespException
 	{		
 		prepAuth();
-		String response = connectionService.auth(password);
+		String response = connectionCommand.auth(password);
 		Assert.assertNotNull(response);
 		Assert.assertEquals(ProtocolConstant.RESPONSE_OK, response);
 		verify(connectionManager).send(sentCommand, SimpleString.class);
@@ -93,7 +93,7 @@ public class ConnectionServiceMockTest {
 	public void testPing() throws IOException, RespException
 	{		
 		prepPing();
-		String response = connectionService.ping();
+		String response = connectionCommand.ping();
 		Assert.assertNotNull(response);
 		Assert.assertEquals(ProtocolConstant.RESPONSE_PONG, response);
 		verify(connectionManager).send(sentCommand, SimpleString.class);
@@ -104,7 +104,7 @@ public class ConnectionServiceMockTest {
 	{		
 		String message = "Hello World!";
 		prepEcho(message);
-		String response = connectionService.echo(message);
+		String response = connectionCommand.echo(message);
 		Assert.assertNotNull(response);
 		Assert.assertEquals(message, response);
 		verify(connectionManager).send(sentCommand, SimpleString.class);

@@ -21,7 +21,7 @@ package com.central.sembilar.resp;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.central.sembilar.resp.RespSerializer;
+import com.central.sembilar.resp.RespCommandSerializer;
 
 public class RespSerializerTest {
 
@@ -30,7 +30,7 @@ public class RespSerializerTest {
 	{
 		String command = "PING";
 		String expCommand = "*1\r\n$4\r\nPING\r\n";
-		RespSerializer serializer = new RespSerializer();
+		RespCommandSerializer serializer = new RespCommandSerializer();
 		String cmdz = serializer.serialize(command);
 		System.err.println(cmdz);
 		Assert.assertEquals(expCommand, cmdz);		

@@ -18,16 +18,11 @@
 
 package com.central.sembilar.resp.command;
 
-import java.io.IOException;
-import java.util.List;
+import com.central.sembilar.resp.type.RespArray;
+import com.central.sembilar.resp.type.RespInteger;
 
-import com.central.sembilar.resp.RespException;
-import com.central.sembilar.resp.cluster.ClusterNode;
-import com.central.sembilar.resp.type.BulkString;
+public interface List extends Command {
 
-public interface ClusterService extends CommandService {
-
-	public BulkString clusterInfo() throws IOException, RespException;
-	public BulkString clusterNodes() throws IOException, RespException;
-	public List<ClusterNode> buildClusterNode() throws IOException, RespException;
+	public RespInteger rpush(String key, String... values);
+	public RespArray lrange(String key);
 }

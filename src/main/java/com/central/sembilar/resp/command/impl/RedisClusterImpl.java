@@ -23,22 +23,22 @@ import java.util.List;
 
 import com.central.sembilar.resp.ProtocolConstant;
 import com.central.sembilar.resp.RespException;
-import com.central.sembilar.resp.RespSerializer;
+import com.central.sembilar.resp.RespCommandSerializer;
 import com.central.sembilar.resp.cluster.ClusterNode;
-import com.central.sembilar.resp.command.ClusterService;
+import com.central.sembilar.resp.command.Cluster;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.connection.RespClient;
 import com.central.sembilar.resp.parser.ClusterNodeParser;
 import com.central.sembilar.resp.parser.impl.RedisClusterNodeParser;
 import com.central.sembilar.resp.type.BulkString;
 
-public class RedisClusterServiceImpl implements ClusterService {
+public class RedisClusterImpl implements Cluster {
 	
 	private ConnectionManager connectionManager;
 	
 	@Override
 	public BulkString clusterInfo() throws IOException, RespException {
-		RespSerializer serializer = new RespSerializer();
+		RespCommandSerializer serializer = new RespCommandSerializer();
 		String cmd = serializer.serialize(ProtocolConstant.COMMAND_CLUSTER_INFO);
 		RespClient client = connectionManager.getClientFromPool();
 		BulkString resp = client.send(cmd, BulkString.class);
@@ -47,7 +47,7 @@ public class RedisClusterServiceImpl implements ClusterService {
 
 	@Override
 	public BulkString clusterNodes() throws IOException, RespException {
-		RespSerializer serializer = new RespSerializer();
+		RespCommandSerializer serializer = new RespCommandSerializer();
 		String cmd = serializer.serialize(ProtocolConstant.COMMAND_CLUSTER_NODES);
 		RespClient client = connectionManager.getSeedEndpointClients().get(0);
 		BulkString resp = client.send(cmd, BulkString.class);

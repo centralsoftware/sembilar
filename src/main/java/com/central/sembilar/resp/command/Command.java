@@ -18,11 +18,9 @@
 
 package com.central.sembilar.resp.command;
 
-import com.central.sembilar.resp.type.RespArray;
-import com.central.sembilar.resp.type.RespInteger;
+import com.central.sembilar.resp.connection.ConnectionManager;
 
-public interface ListService extends CommandService {
+public interface Command {
 
-	public RespInteger rpush(String key, String... values);
-	public RespArray lrange(String key);
+	public void setConnectionManager(ConnectionManager connectionManager);
 }

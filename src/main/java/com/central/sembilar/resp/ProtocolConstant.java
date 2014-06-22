@@ -56,7 +56,9 @@ public class ProtocolConstant {
 	public final static String COMMAND_LIST_LRANGE = "LRANGE";		
 	
 	// Hashes commands
-	public final static String COMMAND_LIST_HSET = "HSET";	
-	public final static String COMMAND_LIST_HGET = "HGET";			
+	public final static String COMMAND_HASH_HSET = "HSET";	
+	public final static String COMMAND_HASH_HGET = "HGET";	
+	public final static String COMMAND_HASH_HKEYS = "HKEYS";		
+	public final static String COMMAND_HASH_HLEN = "HLEN";		
 	
 }

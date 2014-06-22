@@ -19,12 +19,15 @@
 package com.central.sembilar.resp.command;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.central.sembilar.resp.RespException;
+import com.central.sembilar.resp.cluster.ClusterNode;
+import com.central.sembilar.resp.type.BulkString;
 
-public interface ConnectionService extends CommandService {
+public interface Cluster extends Command {
 
-	public String auth(String password) throws IOException, RespException;
-	public String ping() throws IOException, RespException;
-	public String echo(String message) throws IOException, RespException;	
+	public BulkString clusterInfo() throws IOException, RespException;
+	public BulkString clusterNodes() throws IOException, RespException;
+	public List<ClusterNode> buildClusterNode() throws IOException, RespException;
 }

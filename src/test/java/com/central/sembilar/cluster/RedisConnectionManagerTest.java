@@ -23,7 +23,7 @@ import com.central.sembilar.resp.AskException;
 import com.central.sembilar.resp.MovedException;
 import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.cluster.ClusterNode;
-import com.central.sembilar.resp.command.ClusterService;
+import com.central.sembilar.resp.command.Cluster;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.connection.RespClient;
 import com.central.sembilar.resp.connection.RespClientFactory;
@@ -48,7 +48,7 @@ public class RedisConnectionManagerTest {
 	RespClientFactory factory;
 	
 	@Mock
-	ClusterService clusterService;
+	Cluster clusterService;
 	
 	@Mock
 	RespClient oldNodeClient;

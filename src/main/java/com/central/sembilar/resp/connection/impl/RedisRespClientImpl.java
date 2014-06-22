@@ -25,7 +25,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
-import com.central.sembilar.resp.RespDeserializer;
+import com.central.sembilar.resp.RespCommandDeserializer;
 import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.cluster.ClusterNode;
 import com.central.sembilar.resp.connection.RespClient;
@@ -107,7 +107,7 @@ public class RedisRespClientImpl implements RespClient {
 	public <T extends RespType> T send(String command, Class<T> responseClass) throws IOException, RespException {
 		out.write(command.getBytes());
 		socket.getOutputStream().flush();
-		RespDeserializer deserializer = new RespDeserializer(in);
+		RespCommandDeserializer deserializer = new RespCommandDeserializer(in);
 		T response = deserializer.deserialize(responseClass);
 		return response;
 	}

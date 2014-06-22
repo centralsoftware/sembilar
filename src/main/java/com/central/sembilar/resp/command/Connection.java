@@ -18,9 +18,13 @@
 
 package com.central.sembilar.resp.command;
 
-import com.central.sembilar.resp.connection.ConnectionManager;
+import java.io.IOException;
 
-public interface CommandService {
+import com.central.sembilar.resp.RespException;
 
-	public void setConnectionManager(ConnectionManager connectionManager);
+public interface Connection extends Command {
+
+	public String auth(String password) throws IOException, RespException;
+	public String ping() throws IOException, RespException;
+	public String echo(String message) throws IOException, RespException;	
 }

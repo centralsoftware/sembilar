@@ -18,11 +18,13 @@
 
 package com.central.sembilar.resp.command;
 
-import com.central.sembilar.resp.type.RespArray;
-import com.central.sembilar.resp.type.RespInteger;
+import java.io.IOException;
 
-public interface List extends Command {
+import com.central.sembilar.resp.RespException;
 
-	public RespInteger rpush(String key, String... values);
-	public RespArray lrange(String key);
+public interface ConnectionCommand extends Command {
+
+	public String auth(String password) throws IOException, RespException;
+	public String ping() throws IOException, RespException;
+	public String echo(String message) throws IOException, RespException;	
 }

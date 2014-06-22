@@ -23,11 +23,11 @@ import java.io.IOException;
 import com.central.sembilar.resp.ProtocolConstant;
 import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.RespCommandSerializer;
-import com.central.sembilar.resp.command.Connection;
+import com.central.sembilar.resp.command.ConnectionCommand;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.type.SimpleString;
 
-public class RedisConnectionImpl implements Connection
+public class RedisConnectionCommandImpl implements ConnectionCommand
 {
 
 	private ConnectionManager connectionManager;

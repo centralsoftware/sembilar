@@ -53,7 +53,8 @@ public class ProtocolConstant {
 	
 	// Lists commands
 	public final static String COMMAND_LIST_RPUSH = "RPUSH";	
-	public final static String COMMAND_LIST_LRANGE = "LRANGE";		
+	public final static String COMMAND_LIST_LRANGE = "LRANGE";
+	public final static String COMMAND_LIST_LLEN = "LLEN";	
 	
 	// Hashes commands
 	public final static String COMMAND_HASH_HSET = "HSET";	

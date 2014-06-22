@@ -25,7 +25,7 @@ import com.central.sembilar.resp.RespDeserializer;
 import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.RespSerializer;
 
-public interface Hash extends Command {
+public interface HashCommand extends Command {
 
 	public int hset(String key, String field, String value) throws IOException, RespException;
 	public <T extends Serializable> int hset(String key, String field, T value, RespSerializer<T> serializer) throws IOException, RespException;

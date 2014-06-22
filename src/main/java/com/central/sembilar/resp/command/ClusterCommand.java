@@ -25,7 +25,7 @@ import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.cluster.ClusterNode;
 import com.central.sembilar.resp.type.BulkString;
 
-public interface Cluster extends Command {
+public interface ClusterCommand extends Command {
 
 	public BulkString clusterInfo() throws IOException, RespException;
 	public BulkString clusterNodes() throws IOException, RespException;

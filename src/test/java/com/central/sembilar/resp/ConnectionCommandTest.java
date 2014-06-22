@@ -32,8 +32,8 @@ import org.mockito.MockitoAnnotations;
 import com.central.sembilar.resp.ProtocolConstant;
 import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.RespCommandSerializer;
-import com.central.sembilar.resp.command.Connection;
-import com.central.sembilar.resp.command.impl.RedisConnectionImpl;
+import com.central.sembilar.resp.command.ConnectionCommand;
+import com.central.sembilar.resp.command.impl.RedisConnectionCommandImpl;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.type.SimpleString;
 
@@ -45,13 +45,13 @@ public class ConnectionCommandTest {
 	private SimpleString simpleString = new SimpleString();
 	private String password = "password";
 	private String sentCommand = "";
-	Connection connectionCommand;
+	ConnectionCommand connectionCommand;
 	
 	@Before
 	public void setUp() throws IOException, RespException
 	{
 		MockitoAnnotations.initMocks(this);
-		connectionCommand = new RedisConnectionImpl();
+		connectionCommand = new RedisConnectionCommandImpl();
 		connectionCommand.setConnectionManager(connectionManager);
 	}
 	

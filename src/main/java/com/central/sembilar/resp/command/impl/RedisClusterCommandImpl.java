@@ -25,14 +25,14 @@ import com.central.sembilar.resp.ProtocolConstant;
 import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.RespCommandSerializer;
 import com.central.sembilar.resp.cluster.ClusterNode;
-import com.central.sembilar.resp.command.Cluster;
+import com.central.sembilar.resp.command.ClusterCommand;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.connection.RespClient;
 import com.central.sembilar.resp.parser.ClusterNodeParser;
 import com.central.sembilar.resp.parser.impl.RedisClusterNodeParser;
 import com.central.sembilar.resp.type.BulkString;
 
-public class RedisClusterImpl implements Cluster {
+public class RedisClusterCommandImpl implements ClusterCommand {
 	
 	private ConnectionManager connectionManager;
 	

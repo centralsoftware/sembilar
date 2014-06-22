@@ -33,8 +33,8 @@ import com.central.sembilar.resp.MovedInfo;
 import com.central.sembilar.resp.ProtocolConstant;
 import com.central.sembilar.resp.RespException;
 import com.central.sembilar.resp.cluster.ClusterNode;
-import com.central.sembilar.resp.command.Cluster;
-import com.central.sembilar.resp.command.impl.RedisClusterImpl;
+import com.central.sembilar.resp.command.ClusterCommand;
+import com.central.sembilar.resp.command.impl.RedisClusterCommandImpl;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.connection.RespClient;
 import com.central.sembilar.resp.connection.RespClientFactory;
@@ -59,9 +59,9 @@ public class RedisConnectionManagerImpl implements ConnectionManager
 
 	private RespClientFactory respClientFactory = new RedisRespClientFactory();
 
-	private Cluster clusterService = new RedisClusterImpl();	
+	private ClusterCommand clusterService = new RedisClusterCommandImpl();	
 	
-	public RedisConnectionManagerImpl(List<InetSocketAddress> seedEndpoints, RespClientFactory factory, Cluster clusterService) throws RespException, IOException
+	public RedisConnectionManagerImpl(List<InetSocketAddress> seedEndpoints, RespClientFactory factory, ClusterCommand clusterService) throws RespException, IOException
 	{
 		this.seedEndpoints = seedEndpoints;
 		this.respClientFactory = factory;

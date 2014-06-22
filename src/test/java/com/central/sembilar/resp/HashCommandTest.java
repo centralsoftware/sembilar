@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.central.sembilar.resp.command.Hash;
-import com.central.sembilar.resp.command.impl.RedisHashImpl;
+import com.central.sembilar.resp.command.HashCommand;
+import com.central.sembilar.resp.command.impl.RedisHashCommandImpl;
 import com.central.sembilar.resp.connection.ConnectionManager;
 import com.central.sembilar.resp.type.BulkString;
 import com.central.sembilar.resp.type.RespArray;
@@ -31,13 +31,13 @@ public class HashCommandTest {
 	private RespInteger resultOkInt;
 	private BulkString bulkStringResp;
 	private RespArray array;
-	private Hash hashCommand;
+	private HashCommand hashCommand;
 	
 	@Before
 	public void setUp() throws IOException, RespException
 	{
 		MockitoAnnotations.initMocks(this);
-		hashCommand = new RedisHashImpl();
+		hashCommand = new RedisHashCommandImpl();
 		hashCommand.setConnectionManager(connectionManager);
 	}
 	

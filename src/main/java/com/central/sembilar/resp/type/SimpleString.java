@@ -22,6 +22,13 @@ public class SimpleString extends RespType
 {
 	private String string;
 
+	public SimpleString() {};
+	
+	public SimpleString(String string)
+	{
+		this.string = string;
+	}
+	
 	public String getString() {
 		return string;
 	}

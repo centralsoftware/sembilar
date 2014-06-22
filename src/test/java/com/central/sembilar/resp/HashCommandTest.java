@@ -28,7 +28,7 @@ public class HashCommandTest {
 	private ConnectionManager connectionManager;	
 	
 	private String sentCommand = "";
-	private RespInteger resultOkInt;
+	private RespInteger resultInt;
 	private BulkString bulkStringResp;
 	private RespArray array;
 	private HashCommand hashCommand;
@@ -45,9 +45,9 @@ public class HashCommandTest {
 	{
 		RespCommandSerializer serializer = new RespCommandSerializer();
 		sentCommand = serializer.serialize(ProtocolConstant.COMMAND_HASH_HSET, "key", "field", "value");
-		resultOkInt = new RespInteger();
-		resultOkInt.setInteger(1);
-		when(connectionManager.send("key", sentCommand, RespInteger.class)).thenReturn(resultOkInt);
+		resultInt = new RespInteger();
+		resultInt.setInteger(1);
+		when(connectionManager.send("key", sentCommand, RespInteger.class)).thenReturn(resultInt);
 	}
 	
 	@Test
@@ -63,9 +63,9 @@ public class HashCommandTest {
 	{
 		RespCommandSerializer serializer = new RespCommandSerializer();
 		sentCommand = serializer.serialize(ProtocolConstant.COMMAND_HASH_HSET, "key", "field", "value");
-		resultOkInt = new RespInteger();
-		resultOkInt.setInteger(0);
-		when(connectionManager.send("key", sentCommand, RespInteger.class)).thenReturn(resultOkInt);
+		resultInt = new RespInteger();
+		resultInt.setInteger(0);
+		when(connectionManager.send("key", sentCommand, RespInteger.class)).thenReturn(resultInt);
 	}
 	
 	@Test
@@ -141,4 +141,23 @@ public class HashCommandTest {
 		Assert.assertEquals(2, resp.size());
 		verify(connectionManager).send("key", sentCommand, RespArray.class);
 	}		
+	
+	private void prepHlen() throws IOException, RespException
+	{
+		RespCommandSerializer serializer = new RespCommandSerializer();
+		sentCommand = serializer.serialize(ProtocolConstant.COMMAND_HASH_HLEN, "key");
+		resultInt = new RespInteger();
+		resultInt.setInteger(1);
+		when(connectionManager.send("key", sentCommand, RespInteger.class)).thenReturn(resultInt);
+	}		
+	
+	@Test
+	public void hlenTest() throws IOException, RespException
+	{
+		prepHlen();
+		int resp = hashCommand.hlen("key");
+		Assert.assertNotNull(resp);
+		Assert.assertEquals(1, resp);
+		verify(connectionManager).send("key", sentCommand, RespInteger.class);
+	}	
 }

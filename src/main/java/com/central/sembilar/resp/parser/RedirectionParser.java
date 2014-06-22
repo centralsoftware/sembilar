@@ -1,4 +1,4 @@
-package com.central.varth.resp.parser;
+package com.central.sembilar.resp.parser;
 
 
 public interface RedirectionParser<T> {

@@ -16,7 +16,7 @@
  * 
  */
 
-package com.central.varth.resp.connection.impl;
+package com.central.sembilar.resp.connection.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;

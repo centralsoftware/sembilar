@@ -19,6 +19,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.central.sembilar.resp.connection.impl.RedisConnectionManagerImpl;
+import com.central.sembilar.resp.connection.impl.RedisRespClientFactory;
+import com.central.sembilar.resp.connection.impl.RedisRespClientImpl;
 import com.central.varth.resp.AskException;
 import com.central.varth.resp.MovedException;
 import com.central.varth.resp.RespException;
@@ -27,9 +30,6 @@ import com.central.varth.resp.command.ClusterService;
 import com.central.varth.resp.connection.ConnectionManager;
 import com.central.varth.resp.connection.RespClient;
 import com.central.varth.resp.connection.RespClientFactory;
-import com.central.varth.resp.connection.impl.RedisConnectionManagerImpl;
-import com.central.varth.resp.connection.impl.RedisRespClientFactory;
-import com.central.varth.resp.connection.impl.RedisRespClientImpl;
 import com.central.varth.resp.type.SimpleString;
 
 public class RedisConnectionManagerTest {

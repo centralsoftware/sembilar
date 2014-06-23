@@ -61,5 +61,11 @@ public class ProtocolConstant {
 	public final static String COMMAND_HASH_HGET = "HGET";	
 	public final static String COMMAND_HASH_HKEYS = "HKEYS";		
 	public final static String COMMAND_HASH_HLEN = "HLEN";		
+
+	// Strings commands
+	public final static String COMMAND_STRING_SET = "SET";
+	public final static String COMMAND_STRING_GET = "GET";
+	public final static String COMMAND_STRING_NX = "NX";
+	public final static String COMMAND_STRING_XX = "XX";
 	
 }

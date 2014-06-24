@@ -30,13 +30,13 @@ public class RedisStringCommandImpl extends AbstractCommand implements StringCom
 		String cmd = "";
 		if (isOverWrite)
 		{
-			cmd = serializer.serialize(ProtocolConstant.COMMAND_STRING_SET, key, value, ProtocolConstant.COMMAND_STRING_NX);		
+			cmd = serializer.serialize(ProtocolConstant.COMMAND_STRING_SET, key, value, ProtocolConstant.COMMAND_STRING_XX);		
 		} else
 		{
-			cmd = serializer.serialize(ProtocolConstant.COMMAND_STRING_SET, key, value, ProtocolConstant.COMMAND_STRING_XX);					
+			cmd = serializer.serialize(ProtocolConstant.COMMAND_STRING_SET, key, value, ProtocolConstant.COMMAND_STRING_NX);					
 		}
 		SimpleString result = connectionManager.send(key, cmd, SimpleString.class);
-		if (result.equals(ProtocolConstant.RESPONSE_OK))
+		if (result.getString().equals(ProtocolConstant.RESPONSE_OK))
 		{
 			return true;
 		}
@@ -54,7 +54,7 @@ public class RedisStringCommandImpl extends AbstractCommand implements StringCom
 	public String get(String key) throws IOException, RespException {
 		RespCommandSerializer serializer = new RespCommandSerializer();
 		String cmd = serializer.serialize(ProtocolConstant.COMMAND_STRING_GET, key);	
-		BulkString bulkString = connectionManager.send(cmd, BulkString.class);
+		BulkString bulkString = connectionManager.send(key, cmd, BulkString.class);
 		return bulkString.getString();
 	}
 
